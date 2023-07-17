@@ -225,12 +225,12 @@ export async function getFuturesPnLPercentage(symbol) {
 
 export async function trade(symbol, side, quantity) {
    
-
-    client.futuresMarketOrder({
+    client.futuresOrder({
         symbol: symbol,
         side: side,
-        quantity: quantity,
-    })
+        type: 'MARKET',
+        quantity: quantity
+      })
         .then((response) => {
             console.log('Instant futures order placed successfully:', response);
             return true;
