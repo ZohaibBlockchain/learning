@@ -161,12 +161,8 @@ async function Engine() {
 
 
 
-
-
-trade(symbol,"BUY",quantity);
-
 // Call the Engine function every second
-// setInterval(Engine, 100);
+setInterval(Engine, 100);
 setInterval(async () => {
   Dominance = await getMarketOrderDominance(symbol);
 }, 10000);
