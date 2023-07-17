@@ -86,7 +86,7 @@ function init(symbol) {
 }
 
 async function Engine() {
-  if (OperationStartTime <= Date.now()) {
+  if (OperationStartTime <= Date.now() && !pending) {
     console.clear();
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
@@ -98,22 +98,28 @@ async function Engine() {
       if (position) {
         if (tradeDirection === 'Short') {
           //Close trade...
+          pending = true;
           let res = await trade(symbol, 'BUY', quantity)
           if (res) {
             tradeDirection = 'Null';
             position = false;
+            pending = false;
           } else {
             console.log('Error occur while making a trade')
+            pending = false;
           }
         }
       } else {
         //trade
+        pending = true;
         let res = await trade(symbol, 'BUY', quantity)
         if (res) {
           tradeDirection = 'Long';
           position = true;
+          pending = false;
         } else {
           console.log('Error occur while making a trade')
+          pending = false;
         }
       }
     }
@@ -122,22 +128,28 @@ async function Engine() {
       if (position) {
         if (tradeDirection === 'Long') {
           //Close trade...
+          pending = true;
           let res = await trade(symbol, 'SELL', quantity)
           if (res) {
             tradeDirection = 'Null';
             position = false;
+            pending = false;
           } else {
             console.log('Error occur while making a trade')
+            pending = false;
           }
         }
       } else {
         //trade
+        pending = true;
         let res = await trade(symbol, 'SELL', quantity)
         if (res) {
           tradeDirection = 'Short';
           position = true;
+          pending = false;
         } else {
           console.log('Error occur while making a trade')
+          pending = false;
         }
       }
     }
