@@ -15,7 +15,7 @@ const client = Binance.default({
 export function getPriceDirection(PriceInf) {
 
     const currentTime = Date.now();
-    const fifteenMinutesAgo = currentTime - (1 * 60 * 1000);
+    const fifteenMinutesAgo = currentTime - (30 * 1000);
     PriceInf = PriceInf.filter(({ timestamp }) => timestamp > fifteenMinutesAgo);
 
     if (PriceInf.length > 25) {
@@ -110,7 +110,7 @@ export function calculateRSI(pricesX, position) {
 export function calculateVolumeDirection(tradesx) {
 
     const currentTime = Date.now();
-    const fifteenMinutesAgo = currentTime - (90 * 1000);//90 seconds
+    const fifteenMinutesAgo = currentTime - (30 * 1000);//90 seconds
     let trades = tradesx.filter(({ timestamp }) => timestamp > fifteenMinutesAgo);
 
     if (trades.length > 25) {
