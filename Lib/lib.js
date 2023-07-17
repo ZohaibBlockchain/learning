@@ -86,7 +86,7 @@ export function calculateRSI(pricesX, position) {
         const RSI = 100 - (100 / (1 + RS));
         console.log('RSI: ',RSI);
         if (position == false) {
-            if (RSI > 70) {
+            if (RSI > 65) {
                 return "Short";
             } else if (RSI < 20) {
                 return "Long";
@@ -96,7 +96,7 @@ export function calculateRSI(pricesX, position) {
         } else if (position == true) {
             if (RSI > 65) {
                 return "Short";
-            } else if (RSI < 30) {
+            } else if (RSI < 35) {
                 return "Long";
             } else {
                 return "Flat";
