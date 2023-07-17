@@ -85,6 +85,7 @@ function init(symbol) {
     });
 }
 
+
 async function Engine() {
   if (OperationStartTime <= Date.now() && !pending) {
     console.clear();
@@ -94,22 +95,19 @@ async function Engine() {
 
     //finding the opportunity
     if (PD === 'Long' && RSI === 'Long' && VD === 'Long' && Dominance === 'Long') {
-
-      if (position) {
-        if (tradeDirection === 'Short') {
-          //Close trade...
-          pending = true;
-          let res = await trade(symbol, 'BUY', quantity)
-          if (res) {
-            tradeDirection = 'Null';
-            position = false;
-            pending = false;
-          } else {
-            console.log('Error occur while making a trade')
-            pending = false;
-          }
+      if (position && tradeDirection === 'Short') {
+        //Close trade...
+        pending = true;
+        let res = await trade(symbol, 'BUY', quantity);
+        if (res) {
+          tradeDirection = 'Null';
+          position = false;
+          pending = false;
+        } else {
+          console.log('Error occur while making a trade')
+          pending = false;
         }
-      } else {
+      } else if (!position) {
         //trade
         pending = true;
         let res = await trade(symbol, 'BUY', quantity)
@@ -124,22 +122,19 @@ async function Engine() {
       }
     }
     else if (PD === 'Short' && RSI === 'Short' && VD === 'Short' && Dominance === 'Short') {
-
-      if (position) {
-        if (tradeDirection === 'Long') {
-          //Close trade...
-          pending = true;
-          let res = await trade(symbol, 'SELL', quantity)
-          if (res) {
-            tradeDirection = 'Null';
-            position = false;
-            pending = false;
-          } else {
-            console.log('Error occur while making a trade')
-            pending = false;
-          }
+      if (position && tradeDirection === 'Long') {
+        //Close trade...
+        pending = true;
+        let res = await trade(symbol, 'SELL', quantity)
+        if (res) {
+          tradeDirection = 'Null';
+          position = false;
+          pending = false;
+        } else {
+          console.log('Error occur while making a trade')
+          pending = false;
         }
-      } else {
+      } else if (!position) {
         //trade
         pending = true;
         let res = await trade(symbol, 'SELL', quantity)
@@ -168,9 +163,10 @@ async function Engine() {
 
 
 
+trade(symbol,"BUY",quantity);
 
 // Call the Engine function every second
-setInterval(Engine, 100);
+// setInterval(Engine, 100);
 setInterval(async () => {
   Dominance = await getMarketOrderDominance(symbol);
 }, 10000);
