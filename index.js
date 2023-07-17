@@ -29,7 +29,7 @@ const leverage = 1; // The leverage value you want to set
 let position = false;
 let tradeDirection = 'Null';
 const quantity = 0.001; // The quantity of the asset you want to trade
-
+let pending = false;
 
 
 

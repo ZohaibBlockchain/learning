@@ -88,15 +88,15 @@ export function calculateRSI(pricesX, position) {
         if (position == false) {
             if (RSI > 65) {
                 return "Short";
-            } else if (RSI < 20) {
+            } else if (RSI < 35) {
                 return "Long";
             } else {
                 return "Flat";
             }
         } else if (position == true) {
-            if (RSI > 65) {
+            if (RSI > 60) {
                 return "Short";
-            } else if (RSI < 35) {
+            } else if (RSI < 45) {
                 return "Long";
             } else {
                 return "Flat";
