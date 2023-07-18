@@ -6,7 +6,7 @@ dotenv.config();
 const client = Binance.default({
     apiKey: process.env.API_KEY,
     apiSecret: process.env.API_SECRET
-  });
+});
 
 
 
@@ -15,7 +15,7 @@ const client = Binance.default({
 export function getPriceDirection(PriceInf) {
 
     const currentTime = Date.now();
-    const fifteenMinutesAgo = currentTime - (30 * 1000);
+    const fifteenMinutesAgo = currentTime - (60 * 1000);
     PriceInf = PriceInf.filter(({ timestamp }) => timestamp > fifteenMinutesAgo);
 
     if (PriceInf.length > 25) {
@@ -84,23 +84,14 @@ export function calculateRSI(pricesX, position) {
 
         const RS = avgGain / avgLoss;
         const RSI = 100 - (100 / (1 + RS));
-        console.log('RSI: ',RSI);
-        if (position == false) {
-            if (RSI > 65) {
-                return "Short";
-            } else if (RSI < 35) {
-                return "Long";
-            } else {
-                return "Flat";
-            }
-        } else if (position == true) {
-            if (RSI > 60) {
-                return "Short";
-            } else if (RSI < 45) {
-                return "Long";
-            } else {
-                return "Flat";
-            }
+        console.log('RSI: ', RSI);
+
+        if (RSI > 60) {
+            return "Short";
+        } else if (RSI < 40) {
+            return "Long";
+        } else {
+            return "Flat";
         }
     }
 }
@@ -110,7 +101,7 @@ export function calculateRSI(pricesX, position) {
 export function calculateVolumeDirection(tradesx) {
 
     const currentTime = Date.now();
-    const fifteenMinutesAgo = currentTime - (30 * 1000);//90 seconds
+    const fifteenMinutesAgo = currentTime - (60 * 1000);//90 seconds
     let trades = tradesx.filter(({ timestamp }) => timestamp > fifteenMinutesAgo);
 
     if (trades.length > 25) {
@@ -224,20 +215,19 @@ export async function getFuturesPnLPercentage(symbol) {
 
 
 export async function trade(symbol, side, quantity) {
-   
+
     client.futuresOrder({
         symbol: symbol,
         side: side,
         type: 'MARKET',
         quantity: quantity
-      })
+    })
         .then((response) => {
             console.log('Instant futures order placed successfully:', response);
             return true;
             // Handle the success case
         })
         .catch((error) => {
-            console.error('Error placing instant futures order:', error);
-            return false;
+            throw new Error("Program is stopped Due to Trade Error");
         });
 }

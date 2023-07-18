@@ -29,8 +29,7 @@ const leverage = 1; // The leverage value you want to set
 let position = false;
 let tradeDirection = 'Null';
 const quantity = 0.001; // The quantity of the asset you want to trade
-let pending = false;
-
+let IterationTime = 0;
 
 
 
@@ -44,7 +43,6 @@ function init(symbol) {
       console.log("leverage successfully pushed ", response);
       let res = await getFuturesPosition(symbol);
       position = res.res;
-
       wss.on("open", () => {
         console.log(`Subscribed to ${symbol}`);
       });
@@ -86,83 +84,74 @@ function init(symbol) {
 }
 
 
+
+
+
 async function Engine() {
-  if (OperationStartTime <= Date.now() && !pending) {
-    console.clear();
+  if (OperationStartTime <= Date.now()) {
+    // console.clear();
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
+    console.log(VD, RSI, PD, Dominance, position, tradeDirection, IterationTime);
 
-    //finding the opportunity
-    if (PD === 'Long' && RSI === 'Long' && VD === 'Long' && Dominance === 'Long') {
-      if (position && tradeDirection === 'Short') {
-        //Close trade...
-        pending = true;
-        let res = await trade(symbol, 'BUY', quantity);
-        if (res) {
+    if (IterationTime > 0) {
+      IterationTime -= 500;
+    } else {
+      //finding the opportunity
+      if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
+        if (position && tradeDirection === 'Short') {
+          //Close trade...
           tradeDirection = 'Null';
           position = false;
-          pending = false;
-        } else {
-          console.log('Error occur while making a trade')
-          pending = false;
+          IterationTime = 5000;
+          await trade(symbol, 'BUY', quantity);
         }
-      } else if (!position) {
-        //trade
-        pending = true;
-        let res = await trade(symbol, 'BUY', quantity)
-        if (res) {
+        else if (!position) {
+          position = true;
+          console.log('Activated!');
           tradeDirection = 'Long';
-          position = true;
-          pending = false;
-        } else {
-          console.log('Error occur while making a trade')
-          pending = false;
+          IterationTime = 5000;
+          await trade(symbol, 'BUY', quantity);
         }
       }
-    }
-    else if (PD === 'Short' && RSI === 'Short' && VD === 'Short' && Dominance === 'Short') {
-      if (position && tradeDirection === 'Long') {
-        //Close trade...
-        pending = true;
-        let res = await trade(symbol, 'SELL', quantity)
-        if (res) {
+      else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Long') {
+        if (position && tradeDirection === 'Long') {
+          //Close trade...
           tradeDirection = 'Null';
           position = false;
-          pending = false;
-        } else {
-          console.log('Error occur while making a trade')
-          pending = false;
+          IterationTime = 5000;
+          await trade(symbol, 'SELL', quantity);
         }
-      } else if (!position) {
-        //trade
-        pending = true;
-        let res = await trade(symbol, 'SELL', quantity)
-        if (res) {
-          tradeDirection = 'Short';
+        else if (!position) {
           position = true;
-          pending = false;
-        } else {
-          console.log('Error occur while making a trade')
-          pending = false;
+          console.log('Activated!');
+          tradeDirection = 'Short';
+          IterationTime = 5000;
+          await trade(symbol, 'SELL', quantity);
         }
       }
+      else {
+        console.log('...');
+      }
     }
-    else {
-      console.log('...');
-    }
-
-    console.log(VD, RSI, PD, Dominance);
-  } else {
+  }
+  else {
     console.log("Initializing...");
   }
+
+
+
 }
 
 
 
 
 // Call the Engine function every second
-setInterval(Engine, 100);
+setInterval(() => {
+  Engine();
+}, 500);
+
 setInterval(async () => {
   Dominance = await getMarketOrderDominance(symbol);
 }, 10000);
