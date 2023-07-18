@@ -94,6 +94,10 @@ async function Engine() {
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
     console.log(VD, RSI, PD, Dominance, position, tradeDirection, IterationTime);
+    let PNL = await getFuturesPnLPercentage(symbol);
+
+
+
 
     if (IterationTime > 0) {
       IterationTime -= 500;
@@ -129,6 +133,23 @@ async function Engine() {
           tradeDirection = 'Short';
           IterationTime = 5000;
           await trade(symbol, 'SELL', quantity);
+        }
+      }
+      else if(PNL >= 0.5)
+      {
+        if (position && tradeDirection === 'Long') {
+          //Close trade...
+          tradeDirection = 'Null';
+          position = false;
+          IterationTime = 5000;
+          await trade(symbol, 'SELL', quantity);
+        }
+        if (position && tradeDirection === 'Short') {
+          //Close trade...
+          tradeDirection = 'Null';
+          position = false;
+          IterationTime = 5000;
+          await trade(symbol, 'BUY', quantity);
         }
       }
       else {

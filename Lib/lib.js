@@ -201,21 +201,24 @@ export async function getMarketOrderDominance(symbol) {
 
 export async function getFuturesPnLPercentage(symbol) {
     try {
-        const accountInfo = await client.futuresAccount();
-        const balances = accountInfo.positions;
-        const position = balances.find((balance) => balance.symbol === symbol);
-
-        if (position) {
-            const unrealizedPnL = parseFloat(position.unrealizedProfit);
-            const entryPrice = parseFloat(position.entryPrice);
-            const positionValue = parseFloat(position.positionAmt) * entryPrice;
-            const unrealizedPnLPercentage = (unrealizedPnL / positionValue) * 100;
-            console.log(`Unrealized PnL percentage for symbol ${symbol}: ${unrealizedPnLPercentage}%`);
-            return unrealizedPnLPercentage;
-        } else {
-            console.log(`No position found for symbol ${symbol}`);
-            return null;
-        }
+        const accountInfo = await client.futuresAccountBalance();
+        const position = accountInfo.find((balance) => balance.symbol === symbol);
+        const entryPrice = parseFloat('29543.1');
+        const positionAmt = parseFloat('0.001');
+        const unRealizedProfit = parseFloat('0.16370000');
+        
+        // Calculate the current value of the position
+        const currentPositionValue = entryPrice * positionAmt;
+        
+        // Calculate the total value including profit
+        const totalValue = currentPositionValue + unRealizedProfit;
+        
+        // Calculate the profit percentage
+        const profitPercentage = (unRealizedProfit / currentPositionValue) * 100;
+        
+        console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
+        return profitPercentage;
+        
     } catch (error) {
         console.error('Error retrieving futures PnL percentage:', error);
         throw error;
