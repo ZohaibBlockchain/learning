@@ -85,8 +85,6 @@ function init(symbol) {
 
 
 
-
-
 async function Engine() {
   if (OperationStartTime <= Date.now()) {
     // console.clear();
@@ -96,20 +94,19 @@ async function Engine() {
     let PNL = await getFuturesPnLPercentage(symbol);
 
 
-
     if (IterationTime > 0) {
       IterationTime -= 500;
     } else {
       //finding the opportunity
       if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
-        if (position && tradeDirection === 'Short') {
-          //Close trade...
-          tradeDirection = 'Null';
-          position = false;
-          IterationTime = 5000;
-          await trade(symbol, 'BUY', quantity);
-        }
-        else if (!position) {
+        // if (position && tradeDirection === 'Short') {
+        //   //Close trade...
+        //   tradeDirection = 'Null';
+        //   position = false;
+        //   IterationTime = 5000;
+        //   await trade(symbol, 'BUY', quantity);
+        // }
+        if (!position) {
           position = true;
           console.log('Activated!');
           tradeDirection = 'Long';
@@ -118,14 +115,14 @@ async function Engine() {
         }
       }
       else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Long') {
-        if (position && tradeDirection === 'Long') {
-          //Close trade...
-          tradeDirection = 'Null';
-          position = false;
-          IterationTime = 5000;
-          await trade(symbol, 'SELL', quantity);
-        }
-        else if (!position) {
+        // if (position && tradeDirection === 'Long') {
+        //   //Close trade...
+        //   tradeDirection = 'Null';
+        //   position = false;
+        //   IterationTime = 5000;
+        //   await trade(symbol, 'SELL', quantity);
+        // }
+        if (!position) {
           position = true;
           console.log('Activated!');
           tradeDirection = 'Short';
@@ -134,6 +131,22 @@ async function Engine() {
         }
       }
       else if (PNL >= 0.5) {
+        if (position && tradeDirection === 'Long') {
+          //Close trade...
+          tradeDirection = 'Null';
+          position = false;
+          IterationTime = 5000;
+          await trade(symbol, 'SELL', quantity);
+        }
+        if (position && tradeDirection === 'Short') {
+          //Close trade...
+          tradeDirection = 'Null';
+          position = false;
+          IterationTime = 5000;
+          await trade(symbol, 'BUY', quantity);
+        }
+      }
+      else if (PNL <= -1) {
         if (position && tradeDirection === 'Long') {
           //Close trade...
           tradeDirection = 'Null';
