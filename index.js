@@ -99,13 +99,15 @@ async function Engine() {
     } else {
       //finding the opportunity
       if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
-        // if (position && tradeDirection === 'Short') {
-        //   //Close trade...
-        //   tradeDirection = 'Null';
-        //   position = false;
-        //   IterationTime = 5000;
-        //   await trade(symbol, 'BUY', quantity);
-        // }
+        if (position && tradeDirection === 'Short') {
+          if (PNL > 0.05) {
+            //Close trade...
+            tradeDirection = 'Null';
+            position = false;
+            IterationTime = 5000;
+            await trade(symbol, 'BUY', quantity);
+          }
+        }
         if (!position) {
           position = true;
           console.log('Activated!');
@@ -115,13 +117,15 @@ async function Engine() {
         }
       }
       else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Long') {
-        // if (position && tradeDirection === 'Long') {
-        //   //Close trade...
-        //   tradeDirection = 'Null';
-        //   position = false;
-        //   IterationTime = 5000;
-        //   await trade(symbol, 'SELL', quantity);
-        // }
+        if (position && tradeDirection === 'Long') {
+          if (PNL > 0.05) {
+            //Close trade...
+            tradeDirection = 'Null';
+            position = false;
+            IterationTime = 5000;
+            await trade(symbol, 'SELL', quantity);
+          }
+        }
         if (!position) {
           position = true;
           console.log('Activated!');
