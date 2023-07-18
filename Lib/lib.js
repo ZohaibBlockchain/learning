@@ -203,9 +203,9 @@ export async function getFuturesPnLPercentage(symbol) {
     try {
         const accountInfo = await client.futuresAccountBalance();
         const position = accountInfo.find((balance) => balance.symbol === symbol);
-        const entryPrice = parseFloat('29543.1');
-        const positionAmt = parseFloat('0.001');
-        const unRealizedProfit = parseFloat('0.16370000');
+        const entryPrice = parseFloat(position.entryPrice);
+        const positionAmt = parseFloat(position.positionAmt);
+        const unRealizedProfit = parseFloat(position.unRealizedProfit);
         
         // Calculate the current value of the position
         const currentPositionValue = entryPrice * positionAmt;
