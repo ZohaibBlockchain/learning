@@ -93,9 +93,7 @@ async function Engine() {
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
-    console.log(VD, RSI, PD, Dominance, position, tradeDirection, IterationTime);
     let PNL = await getFuturesPnLPercentage(symbol);
-
 
 
 
@@ -135,8 +133,7 @@ async function Engine() {
           await trade(symbol, 'SELL', quantity);
         }
       }
-      else if(PNL >= 0.5)
-      {
+      else if (PNL >= 0.5) {
         if (position && tradeDirection === 'Long') {
           //Close trade...
           tradeDirection = 'Null';

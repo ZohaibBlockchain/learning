@@ -157,7 +157,7 @@ export async function getFuturesPosition(symbol) {
     try {
         const positions = await client.futuresPositionRisk({ symbol: symbol });
         const position = positions.find((position) => position.symbol === symbol);
-        console.log(`Position for symbol ${symbol}:`, position);
+        // console.log(`Position for symbol ${symbol}:`, position);
 
         if (position.entryPrice == 0 && position.liquidationPrice == 0) {
             return { 'res': false, 'inf': position }
@@ -201,11 +201,11 @@ export async function getMarketOrderDominance(symbol) {
 
 export async function getFuturesPnLPercentage(symbol) {
     try {
-        const accountInfo = await client.futuresAccountBalance();
-        const position = accountInfo.find((balance) => balance.symbol === symbol);
-        const entryPrice = parseFloat(position.entryPrice);
-        const positionAmt = parseFloat(position.positionAmt);
-        const unRealizedProfit = parseFloat(position.unRealizedProfit);
+        const position = await client.futuresPositionRisk({ symbol: symbol });
+        // const position = accountInfo.find((balance) => balance.symbol === symbol);
+        const entryPrice = parseFloat(position[0].entryPrice);
+        const positionAmt = parseFloat(position[0].positionAmt);
+        const unRealizedProfit = parseFloat(position[0].unRealizedProfit);
         
         // Calculate the current value of the position
         const currentPositionValue = entryPrice * positionAmt;
