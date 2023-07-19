@@ -1,3 +1,4 @@
+import { math } from '@tensorflow/tfjs';
 import Binance from 'binance-api-node';
 import dotenv from 'dotenv';
 
@@ -197,25 +198,34 @@ export async function getMarketOrderDominance(symbol) {
 }
 
 
+//0.0123 * 2 * leverage
+
+function calculateFee(quantity,leverage) {
+
+    quantity = Math.abs(quantity);
+    const baseQuantity = 0.001;
+    const baseFee = 0.02407512; //For each Trade
+    // Calculate the fee based on the quantity
+    let fee = (quantity / baseQuantity) * baseFee;
+    fee = fee * leverage;
+    console.log('OVA',fee,leverage,quantity);
+    return fee;
+  }
 
 
-export async function getFuturesPnLPercentage(symbol) {
+export async function getFuturesPnLPercentage(symbol,leverage) {
     try {
         const position = await client.futuresPositionRisk({ symbol: symbol });
-        // const position = accountInfo.find((balance) => balance.symbol === symbol);
         const entryPrice = parseFloat(position[0].entryPrice);
-        const positionAmt = parseFloat(position[0].positionAmt);
-        const unRealizedProfit = parseFloat(position[0].unRealizedProfit);
-        
+        let positionAmt = parseFloat(position[0].positionAmt);
+        let unRealizedProfit = parseFloat(position[0].unRealizedProfit);
+        unRealizedProfit -= calculateFee(positionAmt,leverage);
         // Calculate the current value of the position
-        const currentPositionValue = entryPrice * positionAmt;
-        
+        const currentPositionValue = entryPrice * Math.abs(positionAmt);
         // Calculate the total value including profit
         const totalValue = currentPositionValue + unRealizedProfit;
-        
         // Calculate the profit percentage
         const profitPercentage = (unRealizedProfit / currentPositionValue) * 100;
-        
         console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
         return profitPercentage;
         

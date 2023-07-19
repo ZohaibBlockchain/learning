@@ -91,7 +91,7 @@ async function Engine() {
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
-    let PNL = await getFuturesPnLPercentage(symbol);
+    let PNL = await getFuturesPnLPercentage(symbol,leverage);
 
 
     if (IterationTime > 0) {
@@ -100,7 +100,7 @@ async function Engine() {
       //finding the opportunity
       if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
         if (position && tradeDirection === 'Short') {
-          if (PNL > 0.05) {
+          if (PNL > 0.01) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
@@ -118,7 +118,7 @@ async function Engine() {
       }
       else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Long') {
         if (position && tradeDirection === 'Long') {
-          if (PNL > 0.05) {
+          if (PNL > 0.01) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
@@ -134,15 +134,15 @@ async function Engine() {
           await trade(symbol, 'SELL', quantity);
         }
       }
-      else if (PNL >= 0.5) {
-        if (position && tradeDirection === 'Long') {
+      else if (PNL >= 0.4) {
+        if (position && tradeDirection === 'Long' && PD === 'Short') {
           //Close trade...
           tradeDirection = 'Null';
           position = false;
           IterationTime = 5000;
           await trade(symbol, 'SELL', quantity);
         }
-        if (position && tradeDirection === 'Short') {
+        if (position && tradeDirection === 'Short' && PD === 'Long') {
           //Close trade...
           tradeDirection = 'Null';
           position = false;
