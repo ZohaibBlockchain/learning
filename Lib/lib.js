@@ -198,8 +198,6 @@ export async function getMarketOrderDominance(symbol) {
 }
 
 
-//0.0123 * 2 * leverage
-
 function calculateFee(quantity,leverage) {
 
     quantity = Math.abs(quantity);
@@ -208,7 +206,7 @@ function calculateFee(quantity,leverage) {
     // Calculate the fee based on the quantity
     let fee = (quantity / baseQuantity) * baseFee;
     fee = fee * leverage;
-    console.log('OVA',fee,leverage,quantity);
+    // console.log('OVA',fee,leverage,quantity);
     return fee;
   }
 
@@ -226,7 +224,7 @@ export async function getFuturesPnLPercentage(symbol,leverage) {
         const totalValue = currentPositionValue + unRealizedProfit;
         // Calculate the profit percentage
         const profitPercentage = (unRealizedProfit / currentPositionValue) * 100;
-        console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
+        // console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
         return profitPercentage;
         
     } catch (error) {

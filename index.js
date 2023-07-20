@@ -91,7 +91,12 @@ async function Engine() {
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
-    let PNL = await getFuturesPnLPercentage(symbol,leverage);
+    let PNL;
+    if(position)
+    {
+      PNL = await getFuturesPnLPercentage(symbol,leverage);
+    }
+    
 
 
     if (IterationTime > 0) {
@@ -170,6 +175,7 @@ async function Engine() {
         console.log('...');
       }
     }
+    console.log('PD: ',PD,'RSI: ',RSI,'VD: ',VD,'PNL: ',PNL);
   }
   else {
     console.log("Initializing...");
