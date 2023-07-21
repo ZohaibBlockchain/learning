@@ -30,12 +30,12 @@ let position = false;
 let tradeDirection = 'Null';
 const quantity = 0.005; // The quantity of the asset you want to trade
 let IterationTime = 0;
-
+let PNL;
 
 
 function init(symbol) {
   let wss;
-  
+
 
   const connectWebSocket = () => {
     wss = new WebSocket(
@@ -116,12 +116,9 @@ async function Engine() {
     let PD = getPriceDirection(PriceArr);
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
-    let PNL;
     if (position) {
       PNL = await getFuturesPnLPercentage(symbol, leverage);
     }
-
-
 
     if (IterationTime > 0) {
       IterationTime -= 500;
@@ -129,7 +126,7 @@ async function Engine() {
       //finding the opportunity
       if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
         if (position && tradeDirection === 'Short') {
-          if (PNL > 0.01) {
+          if (PNL > (0.01 * leverage)) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
@@ -147,7 +144,7 @@ async function Engine() {
       }
       else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Short') {
         if (position && tradeDirection === 'Long') {
-          if (PNL > 0.01) {
+          if (PNL > (0.01 * leverage)) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
@@ -163,7 +160,7 @@ async function Engine() {
           await trade(symbol, 'SELL', quantity);
         }
       }
-      else if (PNL >= 0.4) {
+      else if (PNL >=(0.45 * leverage)) {
         if (position && tradeDirection === 'Long' && PD === 'Short') {
           //Close trade...
           tradeDirection = 'Null';
@@ -179,7 +176,7 @@ async function Engine() {
           await trade(symbol, 'BUY', quantity);
         }
       }
-      else if (PNL <= -2.5) {
+      else if (PNL <= -(1.5 * leverage)) {
         if (position && tradeDirection === 'Long') {
           //Close trade...
           tradeDirection = 'Null';

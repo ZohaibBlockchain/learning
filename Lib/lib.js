@@ -198,7 +198,7 @@ function calculateFee(quantity, leverage) {
     const baseFee = 0.02407512; //For each Trade
     // Calculate the fee based on the quantity
     let fee = (quantity / baseQuantity) * baseFee;
-    fee = fee * leverage;
+    fee = fee;
     // console.log('OVA',fee,leverage,quantity);
     return fee;
 }
@@ -211,14 +211,8 @@ export async function getFuturesPnLPercentage(symbol, leverage) {
         let positionAmt = parseFloat(position[0].positionAmt);
         let unRealizedProfit = parseFloat(position[0].unRealizedProfit);
         unRealizedProfit -= calculateFee(positionAmt, leverage);
-        // Calculate the current value of the position
-        const currentPositionValue = entryPrice * Math.abs(positionAmt);
-        // Calculate the total value including profit
-        const totalValue = currentPositionValue + unRealizedProfit;
-        // Calculate the profit percentage
-        const profitPercentage = (unRealizedProfit / currentPositionValue) * 100;
-        // console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
-        return profitPercentage;
+        console.log('PNL:', unRealizedProfit.toFixed(2) + '%');
+        return unRealizedProfit;
 
     } catch (error) {
         console.error('Error retrieving futures PnL percentage:', error);
