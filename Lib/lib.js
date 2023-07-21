@@ -87,22 +87,14 @@ export function calculateRSI(pricesX, position) {
         const RSI = 100 - (100 / (1 + RS));
         console.log('RSI: ',RSI);
         if (position == false) {
-            if (RSI > 65) {
-                return "Short";
-            } else if (RSI < 35) {
-                return "Long";
-            } else {
-                return "Flat";
-            }
-        } else if (position == true) {
-            if (RSI > 60) {
+            if (RSI > 55) {
                 return "Short";
             } else if (RSI < 45) {
                 return "Long";
             } else {
                 return "Flat";
             }
-        }
+        } 
     }
 }
 
