@@ -175,7 +175,7 @@ async function Engine() {
         console.log('...');
       }
     }
-    console.log('PD: ',PD,'RSI: ',RSI,'VD: ',VD,'PNL: ',PNL);
+    console.log('PD: ',PD,'RSI: ',RSI,'VD: ',VD,'PNL: ',PNL,'Position: ',position,'TD: ',tradeDirection);
   }
   else {
     console.log("Initializing...");
