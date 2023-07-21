@@ -7,7 +7,7 @@ dotenv.config();
 const client = Binance.default({
     apiKey: process.env.API_KEY,
     apiSecret: process.env.API_SECRET
-  });
+});
 
 
 
@@ -85,17 +85,17 @@ export function calculateRSI(pricesX, position) {
 
         const RS = avgGain / avgLoss;
         const RSI = 100 - (100 / (1 + RS));
-        console.log('RSI: ',RSI);
-        if (position == false) {
-            if (RSI > 55) {
-                return "Short";
-            } 
-            else if (RSI < 45) {
-                return "Long";
-            } else {
-                return "Flat";
-            }
-        } 
+        console.log('RSI: ', RSI);
+
+        if (RSI > 55) {
+            return "Short";
+        }
+        else if (RSI < 45) {
+            return "Long";
+        } else {
+            return "Flat";
+        }
+
     }
 }
 
@@ -191,7 +191,7 @@ export async function getMarketOrderDominance(symbol) {
 }
 
 
-function calculateFee(quantity,leverage) {
+function calculateFee(quantity, leverage) {
 
     quantity = Math.abs(quantity);
     const baseQuantity = 0.001;
@@ -201,16 +201,16 @@ function calculateFee(quantity,leverage) {
     fee = fee * leverage;
     // console.log('OVA',fee,leverage,quantity);
     return fee;
-  }
+}
 
 
-export async function getFuturesPnLPercentage(symbol,leverage) {
+export async function getFuturesPnLPercentage(symbol, leverage) {
     try {
         const position = await client.futuresPositionRisk({ symbol: symbol });
         const entryPrice = parseFloat(position[0].entryPrice);
         let positionAmt = parseFloat(position[0].positionAmt);
         let unRealizedProfit = parseFloat(position[0].unRealizedProfit);
-        unRealizedProfit -= calculateFee(positionAmt,leverage);
+        unRealizedProfit -= calculateFee(positionAmt, leverage);
         // Calculate the current value of the position
         const currentPositionValue = entryPrice * Math.abs(positionAmt);
         // Calculate the total value including profit
@@ -219,7 +219,7 @@ export async function getFuturesPnLPercentage(symbol,leverage) {
         const profitPercentage = (unRealizedProfit / currentPositionValue) * 100;
         // console.log('Profit Percentage:', profitPercentage.toFixed(2) + '%');
         return profitPercentage;
-        
+
     } catch (error) {
         console.error('Error retrieving futures PnL percentage:', error);
         throw error;
@@ -228,13 +228,13 @@ export async function getFuturesPnLPercentage(symbol,leverage) {
 
 
 export async function trade(symbol, side, quantity) {
-   
+
     client.futuresOrder({
         symbol: symbol,
         side: side,
         type: 'MARKET',
         quantity: quantity
-      })
+    })
         .then((response) => {
             console.log('Instant futures order placed successfully:', response);
             return true;
