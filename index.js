@@ -25,7 +25,7 @@ let trades = [];
 let Dominance;
 const OperationStartTime = Date.now() + 6 * 60 * 1000;
 const symbol = "BTCUSDT"; // The futures trading pair
-const leverage = 1; // The leverage value you want to set
+const leverage = 2; // The leverage value you want to set
 let position = false;
 let tradeDirection = 'Null';
 const quantity = 0.005; // The quantity of the asset you want to trade
