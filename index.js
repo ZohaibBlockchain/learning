@@ -105,7 +105,7 @@ async function Engine() {
       //finding the opportunity
       if (PD === 'Long' && VD === 'Long' && Dominance === 'Long' && RSI === 'Long') {
         if (position && tradeDirection === 'Short') {
-          if (PNL > 0.01) {
+          if (PNL > 0.05) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
@@ -123,7 +123,7 @@ async function Engine() {
       }
       else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Short') {
         if (position && tradeDirection === 'Long') {
-          if (PNL > 0.01) {
+          if (PNL > 0.05) {
             //Close trade...
             tradeDirection = 'Null';
             position = false;
