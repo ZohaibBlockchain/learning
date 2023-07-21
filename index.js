@@ -121,7 +121,7 @@ async function Engine() {
           await trade(symbol, 'BUY', quantity);
         }
       }
-      else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Long') {
+      else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Short') {
         if (position && tradeDirection === 'Long') {
           if (PNL > 0.01) {
             //Close trade...
@@ -180,9 +180,6 @@ async function Engine() {
   else {
     console.log("Initializing...");
   }
-
-
-
 }
 
 
