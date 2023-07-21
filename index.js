@@ -34,60 +34,78 @@ let IterationTime = 0;
 
 
 function init(symbol) {
-  const wss = new WebSocket(
-    `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`
-  );
+  let wss;
+  
 
-  setFuturesLeverage(symbol, leverage)
-    .then(async (response) => {
-      console.log("leverage successfully pushed ");
-      let res = await getFuturesPosition(symbol);
-      position = res.res;
-      if (res.res) {
-        if (tradeDirection = res.inf.positionAmt > 0) {
-          tradeDirection = 'Long';
-        } else {
-          tradeDirection = 'Short';
+  const connectWebSocket = () => {
+    wss = new WebSocket(
+      `wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@trade`
+    );
+
+    setFuturesLeverage(symbol, leverage)
+      .then(async (response) => {
+        console.log("leverage successfully pushed ");
+        let res = await getFuturesPosition(symbol);
+        position = res.res;
+        if (res.res) {
+          tradeDirection = res.inf.positionAmt > 0 ? "Long" : "Short";
         }
-      }
-      wss.on("open", () => {
-        console.log(`Subscribed to ${symbol}`);
+
+        wss.on("open", () => {
+          console.log(`Subscribed to ${symbol}`);
+        });
+
+        wss.on("message", (message) => {
+          const data = JSON.parse(message);
+          const price = parseFloat(data.p); // Price of the latest trade
+          const quantity = parseFloat(data.q);
+          const isBuyerMaker = data.m;
+          const timestamp = data.T; // Trade time
+
+          // Add price to PriceArr
+          PriceArr.push({ price, timestamp });
+          if (PriceArr.length > 50000) {
+            PriceArr.shift();
+          }
+
+          // Add trade data to trades
+          trades.push({ quantity, isBuyerMaker, timestamp });
+          if (trades.length > 50000) {
+            trades.shift();
+          }
+          // Filter out trades that are older than 15 minutes
+        });
+
+        wss.on("error", (error) => {
+          console.error(`WebSocket encountered an error: ${error}`);
+          // Attempt reconnection on error
+          reconnectWebSocket();
+        });
+
+        wss.on("close", (code, reason) => {
+          console.log(`WebSocket disconnected: ${code} [${reason}]`);
+          // Attempt reconnection on close
+          reconnectWebSocket();
+        });
+      })
+      .catch((error) => {
+        // Handle error
+        console.error(error);
+        // Attempt reconnection on error
+        reconnectWebSocket();
       });
+  };
 
-      wss.on("message", (message) => {
-        const data = JSON.parse(message);
-        const price = parseFloat(data.p); // Price of the latest trade
-        const quantity = parseFloat(data.q);
-        const isBuyerMaker = data.m;
-        const timestamp = data.T; // Trade time
+  const reconnectWebSocket = () => {
+    const reconnectInterval = 5000; // 5 seconds (adjust as needed)
+    console.log(`Reconnecting in ${reconnectInterval / 1000} seconds...`);
+    setTimeout(() => {
+      connectWebSocket();
+    }, reconnectInterval);
+  };
 
-        // Add price to PriceArr
-
-        PriceArr.push({ price, timestamp });
-        if (PriceArr > 50000) {
-          PriceArr.shift();
-        }
-        // Add trade data to trades
-        trades.push({ quantity, isBuyerMaker, timestamp });
-
-        if (trades > 50000) {
-          trades.shift();
-        }
-        // Filter out trades that are older than 15 minutes
-      });
-
-      wss.on("error", (error) => {
-        console.error(`WebSocket encountered an error: ${error}`);
-      });
-
-      wss.on("close", (code, reason) => {
-        console.log(`WebSocket disconnected: ${code} [${reason}]`);
-      });
-    })
-    .catch((error) => {
-      // Handle error
-      console.error(error);
-    });
+  // Start the initial connection
+  connectWebSocket();
 }
 
 
