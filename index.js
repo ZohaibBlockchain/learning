@@ -155,7 +155,7 @@ async function Engine() {
           await trade(symbol, 'BUY', quantity);
         }
       }
-      else if (PNL <= -1) {
+      else if (PNL <= -2.5) {
         if (position && tradeDirection === 'Long') {
           //Close trade...
           tradeDirection = 'Null';
