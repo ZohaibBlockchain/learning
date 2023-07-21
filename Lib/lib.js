@@ -151,7 +151,7 @@ export async function getFuturesPosition(symbol) {
     try {
         const positions = await client.futuresPositionRisk({ symbol: symbol });
         const position = positions.find((position) => position.symbol === symbol);
-        // console.log(`Position for symbol ${symbol}:`, position);
+        console.log(`Position for symbol ${symbol}:`, position);
 
         if (position.entryPrice == 0 && position.liquidationPrice == 0) {
             return { 'res': false, 'inf': position }

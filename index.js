@@ -43,6 +43,13 @@ function init(symbol) {
       console.log("leverage successfully pushed ", response);
       let res = await getFuturesPosition(symbol);
       position = res.res;
+      if (res.res) {
+        if (tradeDirection = res.inf.positionAmt > 0) {
+          tradeDirection = 'Long';
+        } else {
+          tradeDirection = 'Short';
+        }
+      }
       wss.on("open", () => {
         console.log(`Subscribed to ${symbol}`);
       });
@@ -92,11 +99,10 @@ async function Engine() {
     let RSI = calculateRSI(PriceArr, position);
     let VD = calculateVolumeDirection(trades);
     let PNL;
-    if(position)
-    {
-      PNL = await getFuturesPnLPercentage(symbol,leverage);
+    if (position) {
+      PNL = await getFuturesPnLPercentage(symbol, leverage);
     }
-    
+
 
 
     if (IterationTime > 0) {
@@ -175,7 +181,7 @@ async function Engine() {
         console.log('...');
       }
     }
-    console.log('PD: ',PD,'RSI: ',RSI,'VD: ',VD,'PNL: ',PNL,'Position: ',position,'TD: ',tradeDirection);
+    console.log('PD: ', PD, 'RSI: ', RSI, 'VD: ', VD, 'PNL: ', PNL, 'Position: ', position, 'TD: ', tradeDirection);
   }
   else {
     console.log("Initializing...");
