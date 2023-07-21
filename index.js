@@ -40,7 +40,7 @@ function init(symbol) {
 
   setFuturesLeverage(symbol, leverage)
     .then(async (response) => {
-      console.log("leverage successfully pushed ", response);
+      console.log("leverage successfully pushed ");
       let res = await getFuturesPosition(symbol);
       position = res.res;
       if (res.res) {
@@ -70,7 +70,7 @@ function init(symbol) {
         // Add trade data to trades
         trades.push({ quantity, isBuyerMaker, timestamp });
 
-        if (trades > 30000) {
+        if (trades > 50000) {
           trades.shift();
         }
         // Filter out trades that are older than 15 minutes
