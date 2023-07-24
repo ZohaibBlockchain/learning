@@ -33,6 +33,7 @@ let IterationTime = 0;
 let PNL;
 
 
+
 function init(symbol) {
   let wss;
 
