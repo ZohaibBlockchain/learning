@@ -143,24 +143,24 @@ async function Engine() {
           await trade(symbol, 'BUY', quantity);
         }
       }
-      else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Short') {
-        if (position && tradeDirection === 'Long') {
-          if (PNL > (0.01 * leverage)) {
-            //Close trade...
-            tradeDirection = 'Null';
-            position = false;
-            IterationTime = 5000;
-            await trade(symbol, 'SELL', quantity);
-          }
-        }
-        if (!position) {
-          position = true;
-          console.log('Activated!');
-          tradeDirection = 'Short';
-          IterationTime = 5000;
-          await trade(symbol, 'SELL', quantity);
-        }
-      }
+      // else if (PD === 'Short' && VD === 'Short' && Dominance === 'Short' && RSI === 'Short') {
+      //   if (position && tradeDirection === 'Long') {
+      //     if (PNL > (0.01 * leverage)) {
+      //       //Close trade...
+      //       tradeDirection = 'Null';
+      //       position = false;
+      //       IterationTime = 5000;
+      //       await trade(symbol, 'SELL', quantity);
+      //     }
+      //   }
+      //   if (!position) {
+      //     position = true;
+      //     console.log('Activated!');
+      //     tradeDirection = 'Short';
+      //     IterationTime = 5000;
+      //     await trade(symbol, 'SELL', quantity);
+      //   }
+      // }
       else if (PNL >=(0.45 * leverage)) {
         if (position && tradeDirection === 'Long' && PD === 'Short') {
           //Close trade...
@@ -177,22 +177,22 @@ async function Engine() {
           await trade(symbol, 'BUY', quantity);
         }
       }
-      else if (PNL <= -(1.5 * leverage)) {
-        if (position && tradeDirection === 'Long') {
-          //Close trade...
-          tradeDirection = 'Null';
-          position = false;
-          IterationTime = 5000;
-          await trade(symbol, 'SELL', quantity);
-        }
-        if (position && tradeDirection === 'Short') {
-          //Close trade...
-          tradeDirection = 'Null';
-          position = false;
-          IterationTime = 5000;
-          await trade(symbol, 'BUY', quantity);
-        }
-      }
+      // else if (PNL <= -(1.5 * leverage)) {
+      //   if (position && tradeDirection === 'Long') {
+      //     //Close trade...
+      //     tradeDirection = 'Null';
+      //     position = false;
+      //     IterationTime = 5000;
+      //     await trade(symbol, 'SELL', quantity);
+      //   }
+      //   if (position && tradeDirection === 'Short') {
+      //     //Close trade...
+      //     tradeDirection = 'Null';
+      //     position = false;
+      //     IterationTime = 5000;
+      //     await trade(symbol, 'BUY', quantity);
+      //   }
+      // }
       else {
         console.log('...');
       }
